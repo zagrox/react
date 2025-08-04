@@ -1,6 +1,8 @@
-
 import React, { useState, useEffect, useCallback, ReactNode, useContext, createContext } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AuthForm from '../shared/components/AuthForm';
+import Logout from '../shared/components/Logout';
 
 const ELASTIC_EMAIL_API_BASE = 'https://api.elasticemail.com/v2';
 const ELASTIC_EMAIL_API_V4_BASE = 'https://api.elasticemail.com/v4';
@@ -1898,11 +1900,25 @@ const MobileHeader = ({ viewTitle, onMenuClick }: { viewTitle: string, onMenuCli
     );
 }
 
-const App = () => (
-    <AppProvider>
-        <AppContent />
-    </AppProvider>
-);
+const App = () => {
+    const handleLogin = async (data) => {
+        // Implement login logic using directus
+    };
+
+    const handleRegister = async (data) => {
+        // Implement registration logic using directus
+    };
+
+    return (
+        <Router>
+            <Routes>
+                <Route path="/login" element={<AuthForm title="Login" submitButtonTitle="Login" onSubmit={handleLogin} linkText="Register" linkHref="/register" />} />
+                <Route path="/register" element={<AuthForm title="Register" submitButtonTitle="Register" onSubmit={handleRegister} linkText="Login" linkHref="/login" />} />
+                <Route path="/logout" element={<Logout />} />
+            </Routes>
+        </Router>
+    );
+};
 
 const container = document.getElementById('root');
 if (container) {

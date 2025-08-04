@@ -1,6 +1,6 @@
 // App.js
 import { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './routes/Home';
 import Login from './routes/Login';
 import Register from './routes/Register';
@@ -9,24 +9,28 @@ import Profile from './routes/Profile';
 import { getCurrentUserId } from './lib/directus';
 
 const App = () => {
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
-      setIsAuthenticated(await getCurrentUserId() !== undefined);
+      const userId = await getCurrentUserId();
+      setIsAuthenticated(userId !== undefined);
+      if (!userId) {
+        navigate('/login');
+      }
     }
     fetchData();
-  }, [])
+  }, [navigate]);
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home isAuthenticated={isAuthenticated}/>} />
-        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />} >
+        <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
+        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
-        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated}/>} />
+        <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/register" element={<Register />} />
       </Routes>
     </>
